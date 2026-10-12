@@ -1,0 +1,339 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta
+      name="viewport"
+      content="width=device-width, initial-scale=1, viewport-fit=cover"
+    />
+    <title>A little something for you 💌</title>
+    <style>
+      :root {
+        box-sizing: border-box;
+        padding-top: env(safe-area-inset-top, 0px);
+        padding-bottom: env(safe-area-inset-bottom, 0px);
+        --bg1: #ffe3ec;
+        --bg2: #ffc2d6;
+        --card: #ffffffd9;
+        --ink: #4a1f33;
+        --soft: #8a4a64;
+        --accent: #e63977;
+        --accent2: #ff7aa8;
+        --shadow: #e6397733;
+      }
+      @media (prefers-color-scheme: dark) {
+        :root:not([data-theme="light"]) {
+          --bg1: #2a0f1c;
+          --bg2: #4a1630;
+          --card: #3a1626d9;
+          --ink: #ffe8f0;
+          --soft: #f2b3c9;
+          --accent: #ff5c93;
+          --accent2: #ff8fb3;
+          --shadow: #00000066;
+        }
+      }
+      :root[data-theme="dark"] {
+        --bg1: #2a0f1c;
+        --bg2: #4a1630;
+        --card: #3a1626d9;
+        --ink: #ffe8f0;
+        --soft: #f2b3c9;
+        --accent: #ff5c93;
+        --accent2: #ff8fb3;
+        --shadow: #00000066;
+      }
+      html {
+        scroll-padding-top: env(safe-area-inset-top, 0px);
+      }
+      * {
+        box-sizing: border-box;
+      }
+      html,
+      body {
+        height: 100%;
+        margin: 0;
+      }
+      body {
+        background: linear-gradient(160deg, var(--bg1), var(--bg2));
+        color: var(--ink);
+        font-family:
+          "Quicksand",
+          "Segoe UI",
+          system-ui,
+          -apple-system,
+          sans-serif;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        overflow: hidden;
+      }
+      .hearts {
+        position: fixed;
+        inset: 0;
+        pointer-events: none;
+        overflow: hidden;
+      }
+      .heart {
+        position: absolute;
+        bottom: -40px;
+        opacity: 0.7;
+        animation: rise linear infinite;
+      }
+      @keyframes rise {
+        to {
+          transform: translateY(-110vh) rotate(25deg);
+          opacity: 0;
+        }
+      }
+      .card {
+        position: relative;
+        z-index: 2;
+        width: min(92%, 440px);
+        background: var(--card);
+        backdrop-filter: blur(10px);
+        border-radius: 28px;
+        padding: 34px 26px;
+        text-align: center;
+        box-shadow: 0 20px 50px var(--shadow);
+        animation: pop 0.6s ease both;
+      }
+      @keyframes pop {
+        from {
+          transform: scale(0.9) translateY(20px);
+          opacity: 0;
+        }
+      }
+      .emoji {
+        font-size: 56px;
+        display: block;
+        margin-bottom: 8px;
+        animation: beat 1.4s ease-in-out infinite;
+      }
+      @keyframes beat {
+        0%,
+        100% {
+          transform: scale(1);
+        }
+        50% {
+          transform: scale(1.15);
+        }
+      }
+      h1 {
+        font-size: 26px;
+        margin: 0 0 14px;
+        line-height: 1.25;
+      }
+      p {
+        font-size: 17px;
+        line-height: 1.65;
+        color: var(--soft);
+        margin: 0 0 22px;
+      }
+      .btns {
+        display: flex;
+        gap: 14px;
+        justify-content: center;
+        align-items: center;
+        min-height: 56px;
+        flex-wrap: wrap;
+      }
+      button {
+        font: inherit;
+        font-weight: 700;
+        font-size: 17px;
+        border: 0;
+        cursor: pointer;
+        padding: 13px 28px;
+        border-radius: 999px;
+        transition: transform 0.15s;
+      }
+      button:active {
+        transform: scale(0.95);
+      }
+      .primary {
+        background: linear-gradient(135deg, var(--accent), var(--accent2));
+        color: #fff;
+        box-shadow: 0 8px 20px var(--shadow);
+      }
+      .ghost {
+        background: transparent;
+        color: var(--soft);
+        border: 2px solid var(--soft);
+      }
+      .hidden {
+        display: none;
+      }
+      .dots {
+        display: flex;
+        gap: 6px;
+        justify-content: center;
+        margin-top: 22px;
+      }
+      .dots i {
+        width: 8px;
+        height: 8px;
+        border-radius: 50%;
+        background: var(--soft);
+        opacity: 0.3;
+      }
+      .dots i.on {
+        opacity: 1;
+        background: var(--accent);
+      }
+      small {
+        display: block;
+        margin-top: 18px;
+        color: var(--soft);
+        opacity: 0.8;
+      }
+    </style>
+  </head>
+  <body>
+    <div class="hearts" id="hearts"></div>
+
+    <main class="card" id="card">
+      <span class="emoji" id="emoji">💌</span>
+      <h1 id="title"></h1>
+      <p id="text"></p>
+      <div class="btns" id="btns"></div>
+      <div class="dots" id="dots"></div>
+    </main>
+
+    <script>
+      (function () {
+        // Personalise via link: ?to=Alex&from=Sam  (defaults used otherwise)
+        var q = new URLSearchParams(location.search);
+        var TO = q.get("to") || "you";
+        var FROM = q.get("from") || "Me";
+
+        var steps = [
+          {
+            e: "💌",
+            t: "Hey " + TO + "…",
+            p: "I made this little page because I have something to tell you, and I'm way too nervous to say it out loud.",
+            b: "Okay, go on →",
+          },
+          {
+            e: "🌟",
+            t: "You make my days better",
+            p: "Your smile, your laugh, the way you talk about things you love… somehow everything feels a little brighter when you're around.",
+            b: "Keep going →",
+          },
+          {
+            e: "🫣",
+            t: "So here's the truth",
+            p: "I like you. A lot. More than just a friend, and I couldn't keep it to myself any longer.",
+            b: "And…? →",
+          },
+          {
+            e: "💖",
+            t: "Will you go out with me?",
+            p: "No pressure at all. I just wanted you to know how I feel.",
+            ask: true,
+          },
+        ];
+        var i = 0;
+        var $ = function (id) {
+          return document.getElementById(id);
+        };
+        function render() {
+          var s = steps[i];
+          $("emoji").textContent = s.e;
+          $("title").textContent = s.t;
+          $("text").textContent = s.p;
+          var btns = $("btns");
+          btns.innerHTML = "";
+          if (s.ask) {
+            var yes = document.createElement("button");
+            yes.className = "primary";
+            yes.textContent = "Yes 💕";
+            yes.onclick = celebrate;
+            var no = document.createElement("button");
+            no.className = "ghost";
+            no.textContent = "No";
+            no.id = "no";
+            dodge(no);
+            btns.appendChild(yes);
+            btns.appendChild(no);
+          } else {
+            var b = document.createElement("button");
+            b.className = "primary";
+            b.textContent = s.b;
+            b.onclick = function () {
+              i++;
+              render();
+            };
+            btns.appendChild(b);
+          }
+          $("dots").innerHTML = steps
+            .map(function (_, k) {
+              return '<i class="' + (k === i ? "on" : "") + '"></i>';
+            })
+            .join("");
+        }
+
+        // The "No" button playfully escapes
+        var tries = 0;
+        var noText = [
+          "No",
+          "Are you sure?",
+          "Really? 🥺",
+          "Try again 😳",
+          "Pleaseee",
+          "Nope, wrong one!",
+        ];
+        function dodge(btn) {
+          function run(e) {
+            if (e) e.preventDefault();
+            tries++;
+            btn.textContent = noText[Math.min(tries, noText.length - 1)];
+            btn.style.position = "fixed";
+            var w = window.innerWidth - 140,
+              h = window.innerHeight - 80;
+            btn.style.left = Math.max(10, Math.random() * w) + "px";
+            btn.style.top = Math.max(10, Math.random() * h) + "px";
+            btn.style.zIndex = 5;
+          }
+          btn.addEventListener("mouseenter", run);
+          btn.addEventListener("touchstart", run, { passive: false });
+          btn.addEventListener("click", run);
+        }
+
+        function celebrate() {
+          $("emoji").textContent = "🥰";
+          $("title").textContent = "You said yes!!";
+          $("text").textContent =
+            "You just made my whole year. Can't wait to see you — I'll be the one grinning like an idiot. 💞";
+          $("btns").innerHTML = "";
+          $("dots").innerHTML = "<small>— " + FROM + "</small>";
+          for (var k = 0; k < 40; k++)
+            setTimeout(function () {
+              spawn(true);
+            }, k * 50);
+        }
+
+        // floating hearts
+        var glyphs = ["💗", "💖", "💕", "💘", "🌸", "✨"];
+        function spawn(big) {
+          var h = document.createElement("span");
+          h.className = "heart";
+          h.textContent = glyphs[Math.floor(Math.random() * glyphs.length)];
+          h.style.left = Math.random() * 100 + "%";
+          h.style.fontSize =
+            (big ? 20 + Math.random() * 30 : 14 + Math.random() * 22) + "px";
+          h.style.animationDuration =
+            (big ? 3 + Math.random() * 3 : 7 + Math.random() * 7) + "s";
+          $("hearts").appendChild(h);
+          setTimeout(function () {
+            h.remove();
+          }, 14000);
+        }
+        setInterval(spawn, 700);
+        for (var k = 0; k < 8; k++) spawn();
+
+        render();
+      })();
+    </script>
+  </body>
+</html>
